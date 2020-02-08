@@ -46,7 +46,7 @@ void simple_test()
 
 int main(int argc, char* argv[])
 {
-	PictureRenderer pr(5, 10);
+	PictureRenderer pr(7, 10);
 	pr.Loop();
 	
 	return 0;

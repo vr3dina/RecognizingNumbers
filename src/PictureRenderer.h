@@ -20,8 +20,10 @@ private:
 	sf::Image image;
 	Button button;
 	Label label_numbers;
-	bool isMousePressed;
+	bool is_mouse_pressed;
+	sf::Vector2i last_mouse_pos;
 
+	bool isInTheSameCell(sf::Vector2i a, sf::Vector2i b) const;
 
 	void Draw();
 	void HandleInput();

@@ -3,20 +3,20 @@
 #include <iostream>
 #include <sstream>
 
-PictureRenderer::PictureRenderer(int rows, int cols, unsigned int cell_size) : 
+PictureRenderer::PictureRenderer(int rows, int cols, unsigned int cell_size) :
 	cell_size(cell_size),
 	row_cnt(rows), col_cnt(cols),
-	width(cols * cell_size), height(rows * cell_size), 
+	width(cols* cell_size), height(rows* cell_size),
 	pic(rows, cols),
-	isMousePressed(false),
+	is_mouse_pressed(false),
+	last_mouse_pos(0, 0),
 	button(width + 20, height - 70, 150, 50, "Recognize"),
-	label_numbers(width + 20, 20, "Recognized\nnumbers\n")
+	label_numbers(width + 20, 20, "")
 {
 	window.create(sf::VideoMode(width + 200, height), "Recognizing numbers");
-	window.setFramerateLimit(10);
+	window.setFramerateLimit(60);
 
 	image.create(width, height, sf::Color::White);
-	window.setKeyRepeatEnabled(false);
 }
 
 void PictureRenderer::Loop()
@@ -28,6 +28,11 @@ void PictureRenderer::Loop()
 		Draw();
 		window.display();
 	}
+}
+
+bool PictureRenderer::isInTheSameCell(sf::Vector2i a, sf::Vector2i b) const
+{
+	return a.x / cell_size == b.x / cell_size && a.y / cell_size == b.y / cell_size;
 }
 
 void PictureRenderer::HandleInput()
@@ -44,9 +49,12 @@ void PictureRenderer::HandleInput()
 		case sf::Event::MouseButtonPressed:
 			if (event.mouseButton.button == sf::Mouse::Left)
 			{
-				isMousePressed = true;
 				auto pos = sf::Vector2i(sf::Mouse::getPosition(window));
-				pic.InvertPixel(pos.y / cell_size, pos.x / cell_size);
+				if (pos.x < col_cnt * cell_size && pos.y < row_cnt * cell_size)
+				{
+					is_mouse_pressed = true;
+					pic.InvertPixel(pos.y / cell_size, pos.x / cell_size);
+				}
 
 				if (button.select(pos))
 				{
@@ -61,21 +69,18 @@ void PictureRenderer::HandleInput()
 
 		case sf::Event::MouseButtonReleased:
 			if (event.mouseButton.button == sf::Mouse::Left)
-				isMousePressed = false;
+				is_mouse_pressed = false;
 			break;
 
-		case sf::Event::MouseMoved:
-			if (isMousePressed)
-			{
+			case sf::Event::MouseMoved:
 				auto pos = sf::Vector2i(sf::Mouse::getPosition(window));
-				pic.InvertPixel(pos.y / cell_size, pos.x / cell_size);
-			}
-			break;
-
-		default:
-			break;
+				if (is_mouse_pressed && !isInTheSameCell(pos, last_mouse_pos))
+				{
+					pic.InvertPixel(pos.y / cell_size, pos.x / cell_size);
+					last_mouse_pos = sf::Vector2i(sf::Mouse::getPosition(window));
+				}
+				break;
 		}
-
 	}
 
 }
