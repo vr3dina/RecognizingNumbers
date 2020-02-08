@@ -3,6 +3,10 @@
 #include <iostream>
 #include <sstream>
 
+static int btn_height = 50;
+static int btn_width = 150;
+static int margin = 20;
+
 PictureRenderer::PictureRenderer(int rows, int cols, unsigned int cell_size) :
 	cell_size(cell_size),
 	row_cnt(rows), col_cnt(cols),
@@ -10,7 +14,8 @@ PictureRenderer::PictureRenderer(int rows, int cols, unsigned int cell_size) :
 	pic(rows, cols),
 	is_mouse_pressed(false),
 	last_mouse_pos(0, 0),
-	button(width + 20, height - 70, 150, 50, "Recognize"),
+	btn_recognize(width + margin, height - 2 * btn_height - 2 * margin, btn_width, btn_height, "Recognize"),
+	btn_clear(width + margin, height - btn_height - margin, btn_width, btn_height, "Clear"),
 	label_numbers(width + 20, 20, "")
 {
 	window.create(sf::VideoMode(width + 200, height), "Recognizing numbers");
@@ -56,13 +61,18 @@ void PictureRenderer::HandleInput()
 					pic.InvertPixel(pos.y / cell_size, pos.x / cell_size);
 				}
 
-				if (button.select(pos))
+				if (btn_recognize.select(pos))
 				{
 					auto nums = recognize_numbers(pic);
 					std::stringstream result;
 					std::copy(nums.begin(), nums.end(), std::ostream_iterator<int>(result, " "));
 
 					label_numbers.text = "Recognized\nnumbers\n" + result.str();
+				}
+
+				if (btn_clear.select(pos))
+				{
+					pic.Clear();
 				}
 			}
 			break;
@@ -88,8 +98,10 @@ void PictureRenderer::HandleInput()
 
 void PictureRenderer::Draw()
 {
-	window.draw(button.displayButton());
-	window.draw(button.displayText());
+	window.draw(btn_clear.displayButton());
+	window.draw(btn_clear.displayText());
+	window.draw(btn_recognize.displayButton());
+	window.draw(btn_recognize.displayText());
 	window.draw(label_numbers.displayText());
 
 	sf::RectangleShape cell;

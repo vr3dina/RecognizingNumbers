@@ -18,7 +18,8 @@ private:
 	sf::Event event;
 	sf::RenderWindow window;
 	sf::Image image;
-	Button button;
+	Button btn_recognize;
+	Button btn_clear;
 	Label label_numbers;
 	bool is_mouse_pressed;
 	sf::Vector2i last_mouse_pos;

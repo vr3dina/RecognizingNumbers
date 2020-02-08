@@ -30,6 +30,7 @@ public:
 	size_t Width() const;
 	size_t Height() const;
 	void ClearVisited();
+	void Clear();
 
 private:
 	Matrix<int> pixels;

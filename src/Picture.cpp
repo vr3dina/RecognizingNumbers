@@ -78,6 +78,13 @@ void Picture::ClearVisited()
 			visited[i][j] = false;
 }
 
+void Picture::Clear()
+{
+	for (auto& row : pixels)
+		for (auto& el : row)
+			el = 0;
+}
+
 bool Picture::isCorrectCoord(Point p) const
 {
 	return p.x >= 0 && p.x < height && p.y >= 0 && p.y < width;
