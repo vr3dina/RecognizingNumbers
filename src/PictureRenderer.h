@@ -17,7 +17,7 @@ private:
 
 	sf::Event event;
 	sf::RenderWindow window;
-	sf::Image image;
+	//sf::Image image;
 	Button btn_recognize;
 	Button btn_clear;
 	Label label_numbers;

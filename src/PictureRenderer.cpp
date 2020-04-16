@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-static int btn_height = 50;
+static int btn_height = 45;
 static int btn_width = 150;
 static int margin = 20;
 
@@ -21,7 +21,7 @@ PictureRenderer::PictureRenderer(int rows, int cols, unsigned int cell_size) :
 	window.create(sf::VideoMode(width + 200, height), "Recognizing numbers");
 	window.setFramerateLimit(60);
 
-	image.create(width, height, sf::Color::White);
+	//image.create(width, height, sf::Color::White);
 }
 
 void PictureRenderer::Loop()
@@ -58,6 +58,7 @@ void PictureRenderer::HandleInput()
 				if (pos.x < col_cnt * cell_size && pos.y < row_cnt * cell_size)
 				{
 					is_mouse_pressed = true;
+					last_mouse_pos = pos;
 					pic.InvertPixel(pos.y / cell_size, pos.x / cell_size);
 				}
 
@@ -73,6 +74,7 @@ void PictureRenderer::HandleInput()
 				if (btn_clear.select(pos))
 				{
 					pic.Clear();
+					label_numbers.text = "";
 				}
 			}
 			break;
